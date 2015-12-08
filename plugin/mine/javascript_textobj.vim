@@ -70,18 +70,22 @@
    endfunction
 
    function! WithoutBracketWORD()
-       "向前搜索空白或括号前部分
-       let fpos  = search('\v\s|[([{]', 'b')
+       "向前搜索空白或括号前部分 添加逗号
+       let fpos  = search('\v\s|,|:|[|\(|\{', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        let head_pos[2] +=   1
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v\s|[)]}]')
-
+       let bpos  = search('\v\s|,|:|\)|]|\}')
        let tail_pos = getpos('.')
-       let tail_pos[2] -=   1
-       "echo tail_pos 
+       ", : 删除 括号不删除
+       let char = s:cursor_char()
+       "[]一定要这样顺序  不然匹配不上
+       if char =~ '[])}]'
+           let tail_pos[2] -=   1
+       endif
+
        return ['v', head_pos, tail_pos]
    endfunction
 
@@ -94,3 +98,7 @@
    endfunction
 
    let g:loaded_textobj_mine = 1
+
+function! s:cursor_char()
+  return getline('.')[col('.') - 1]
+endfunction
