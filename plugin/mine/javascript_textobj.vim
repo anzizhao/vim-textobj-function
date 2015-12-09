@@ -31,22 +31,58 @@
                \   },
                \ })
 
-   "选中驼峰一部分
+   "选中驼峰 链接单词的一部分
    call textobj#user#plugin('camel', {
                \   '-': {
-               \     'select-i-function': 'Camel',
+               \     'select-a-function': 'ACamel',
+               \     'select-a': 'awc',
+               \     'select-i-function': 'ICamel',
                \     'select-i': 'iwc',
                \   },
                \ })
 
+   "选中当前光标到分号的
+   call textobj#user#plugin('smeicolon', {
+               \   '-': {
+               \     'select-a-function': 'Smeicolon',
+               \     'select-a': 'a;',
+               \   },
+               \ })
 
-   function! Camel()
-       let fpos  = search('\v\u|\A|\n', 'b')
+   function! Smeicolon()
+       let head_pos = getpos('.') 
+       "echo head_pos
+       "向后搜索
+       let bpos  = search('\v[;\n]')
+       "echo bpos
+       let tail_pos = getpos('.')
+       let tail_pos[2] -=   1
+       "echo tail_pos 
+       return ['v', head_pos, tail_pos]
+   endfunction
+
+   function! ACamel()
+       let fpos  = search('\v\u|\A|\n|-|_|\.|:', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v\u|\A|\n')
+       let bpos  = search('\v\u|\A|\n|-|_|\.|:')
+
+       let tail_pos = getpos('.')
+       let tail_pos[2] -=   1
+       "echo tail_pos 
+       return ['v', head_pos, tail_pos]
+   endfunction
+
+   function! ICamel()
+       let fpos  = search('\v\u|\A|\n|-|_|\.|:', 'b')
+      "bufName lineN colN  off 
+       let head_pos = getpos('.') 
+       let head_pos[2] +=   1
+       "echo head_pos
+       "向后搜索
+       let bpos  = search('\v\u|\A|\n|-|_|\.|:')
 
        let tail_pos = getpos('.')
        let tail_pos[2] -=   1
@@ -71,13 +107,13 @@
 
    function! WithoutBracketWORD()
        "向前搜索空白或括号前部分 添加逗号
-       let fpos  = search('\v\s|,|:|[|\(|\{', 'b')
+       let fpos  = search('\v\s|,|;|[|\(|\{', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        let head_pos[2] +=   1
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v\s|,|:|\)|]|\}')
+       let bpos  = search('\v\s|,|;|\)|]|\}')
        let tail_pos = getpos('.')
        ", : 删除 括号不删除
        let char = s:cursor_char()
