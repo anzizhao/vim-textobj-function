@@ -41,6 +41,16 @@
                \   },
                \ })
 
+   "选中链接单词的一部分
+   call textobj#user#plugin('connectword', {
+               \   '-': {
+               \     'select-a-function': 'Aconnectword',
+               \     'select-a': 'aw.',
+               \     'select-i-function': 'Iconnectword',
+               \     'select-i': 'iw.',
+               \   },
+               \ })
+
    "选中当前光标到分号的
    call textobj#user#plugin('smeicolon', {
                \   '-': {
@@ -49,11 +59,67 @@
                \   },
                \ })
 
+   "选中等于号的右手边
+   call textobj#user#plugin('equalrightside', {
+               \   '-': {
+               \     'select-a-function': 'Equalrightside',
+               \     'select-a': 'a=',
+               \   },
+               \ })
+
+   function! Aconnectword()
+       let fpos  = search('\v[-/[:blank:]-_.]', 'b')
+      "bufName lineN colN  off 
+       let head_pos = getpos('.') 
+       let head_pos[2] +=   1
+       "echo head_pos
+       "向后搜索
+       let bpos  = search('\v[-/[:blank:]-_.]')
+
+       let tail_pos = getpos('.')
+       "let tail_pos[2] -=   1
+       "echo tail_pos 
+       return ['v', head_pos, tail_pos]
+   endfunction
+
+   function! Iconnectword()
+       let fpos  = search('\v[-/[:blank:]-_.]', 'b')
+      "bufName lineN colN  off 
+       let head_pos = getpos('.') 
+       let head_pos[2] +=   1
+       echo head_pos
+       "向后搜索
+       let bpos  = search('\v[-/[:blank:]-_.]')
+
+       let tail_pos = getpos('.')
+       let tail_pos[2] -=   1
+       "echo tail_pos 
+       return ['v', head_pos, tail_pos]
+   endfunction
+
+   function! Equalrightside ()
+       let head_pos = getpos('.') 
+       let head_pos[3] = 0
+
+       call setpos('.', head_pos)
+       "echo head_pos
+       "向后搜索
+       let bpos  = search('\v[=]')
+       "echo bpos
+       let head_pos = getpos('.')
+       let head_pos[2] +=   1
+       let bpos  = search('\v[;]')
+       let tail_pos = getpos('.')
+       let tail_pos[2] -=   1
+       "echo tail_pos 
+       return ['v', head_pos, tail_pos]
+   endfunction
+
    function! Smeicolon()
        let head_pos = getpos('.') 
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v[;\n]')
+       let bpos  = search('\v[;]')
        "echo bpos
        let tail_pos = getpos('.')
        let tail_pos[2] -=   1
@@ -62,12 +128,12 @@
    endfunction
 
    function! ACamel()
-       let fpos  = search('\v\u|\A|\n|-|_|\.|:', 'b')
+       let fpos  = search('\v\u|\A', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v\u|\A|\n|-|_|\.|:')
+       let bpos  = search('\v\u|\A')
 
        let tail_pos = getpos('.')
        let tail_pos[2] -=   1
@@ -76,13 +142,13 @@
    endfunction
 
    function! ICamel()
-       let fpos  = search('\v\u|\A|\n|-|_|\.|:', 'b')
+       let fpos  = search('\v\u|\A', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        let head_pos[2] +=   1
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v\u|\A|\n|-|_|\.|:')
+       let bpos  = search('\v\u|\A')
 
        let tail_pos = getpos('.')
        let tail_pos[2] -=   1
