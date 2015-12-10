@@ -173,13 +173,14 @@
 
    function! WithoutBracketWORD()
        "向前搜索空白或括号前部分 添加逗号
-       let fpos  = search('\v\s|,|;|[|\(|\{', 'b')
+       let fpos  = search('\v\s|[,;{})([]', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        let head_pos[2] +=   1
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v\s|,|;|\)|]|\}')
+       "let bpos  = search('\v\s|[],;})]')
+       let fpos  = search('\v\s|[],;{}()]' )
        let tail_pos = getpos('.')
        ", : 删除 括号不删除
        let char = s:cursor_char()
