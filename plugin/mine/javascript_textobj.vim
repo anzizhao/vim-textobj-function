@@ -16,10 +16,10 @@
  endif
 
    "选中不带括号的WORD 
-   call textobj#user#plugin('withoutbracketword', {
+   call textobj#user#plugin('funcparameter', {
    \   '-': {
-   \     'select-i-function': 'WithoutBracketWORD',
-   \     'select-i': 'iwe',
+   \     'select-i-function': 'Funcparameter',
+   \     'select-i': 'i ',
    \   },
    \ })
 
@@ -27,27 +27,37 @@
    call textobj#user#plugin('alpha', {
                \   '-': {
                \     'select-i-function': 'Alpha',
-               \     'select-i': 'iwu',
+               \     'select-i': 'iu',
                \   },
                \ })
 
-   "选中驼峰 链接单词的一部分
+   "选中驼峰 
    call textobj#user#plugin('camel', {
                \   '-': {
                \     'select-a-function': 'ACamel',
-               \     'select-a': 'awc',
+               \     'select-a': 'ac',
                \     'select-i-function': 'ICamel',
-               \     'select-i': 'iwc',
+               \     'select-i': 'ic',
                \   },
                \ })
 
-   "选中链接单词的一部分
-   call textobj#user#plugin('connectword', {
+   "选中链接单词的  .
+   call textobj#user#plugin('connectworddot', {
                \   '-': {
-               \     'select-a-function': 'Aconnectword',
-               \     'select-a': 'aw.',
-               \     'select-i-function': 'Iconnectword',
-               \     'select-i': 'iw.',
+               \     'select-a-function': 'AconnectwordDot',
+               \     'select-a': 'a.',
+               \     'select-i-function': 'IconnectwordDot',
+               \     'select-i': 'i.',
+               \   },
+               \ })
+
+   "选中链接单词的  .
+   call textobj#user#plugin('connectwordunderline', {
+               \   '-': {
+               \     'select-a-function': 'AconnectwordUnderline',
+               \     'select-a': 'a-',
+               \     'select-i-function': 'IconnectwordUnderline',
+               \     'select-i': 'i-',
                \   },
                \ })
 
@@ -67,35 +77,25 @@
                \   },
                \ })
 
-   function! Aconnectword()
-       let fpos  = search('\v[-/[:blank:]-_.]', 'b')
-      "bufName lineN colN  off 
-       let head_pos = getpos('.') 
-       let head_pos[2] +=   1
-       "echo head_pos
-       "向后搜索
-       let bpos  = search('\v[-/[:blank:]-_.]')
-
-       let tail_pos = getpos('.')
-       "let tail_pos[2] -=   1
-       "echo tail_pos 
-       return ['v', head_pos, tail_pos]
+   function! AconnectwordDot()
+       return s:connectword('.', 0)
    endfunction
 
-   function! Iconnectword()
-       let fpos  = search('\v[-/[:blank:]-_.]', 'b')
-      "bufName lineN colN  off 
-       let head_pos = getpos('.') 
-       let head_pos[2] +=   1
-       echo head_pos
-       "向后搜索
-       let bpos  = search('\v[-/[:blank:]-_.]')
-
-       let tail_pos = getpos('.')
-       let tail_pos[2] -=   1
-       "echo tail_pos 
-       return ['v', head_pos, tail_pos]
+   function! IconnectwordDot()
+       return s:connectword('.', 1)
    endfunction
+
+
+
+   function! AconnectwordUnderline()
+       return s:connectword('_', 0)
+   endfunction
+
+   function! IconnectwordUnderline()
+       return s:connectword('_', 1)
+   endfunction
+
+
 
    function! Equalrightside ()
        let head_pos = getpos('.') 
@@ -127,13 +127,15 @@
        return ['v', head_pos, tail_pos]
    endfunction
 
-   function! ACamel()
-       let fpos  = search('\v\u|\A', 'b')
+
+   function! Alpha()
+       let fpos  = search('\v\A', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
+       let head_pos[2] +=   1
        "echo head_pos
        "向后搜索
-       let bpos  = search('\v\u|\A')
+       let bpos  = search('\v\A')
 
        let tail_pos = getpos('.')
        let tail_pos[2] -=   1
@@ -142,11 +144,22 @@
    endfunction
 
    function! ICamel()
-       let fpos  = search('\v\u|\A', 'b')
+       "先判断当前是否大写
+       let char = s:cursor_char()
+
+       if char !~ '\u'
+           let fpos  = search('\v\u|\A', 'b')
+       endif
+
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
-       let head_pos[2] +=   1
-       "echo head_pos
+
+       "判断开始地方是否大写字母
+       let char = s:cursor_char()
+       if char !~ '\u'
+           let head_pos[2] +=   1
+       endif
+
        "向后搜索
        let bpos  = search('\v\u|\A')
 
@@ -156,24 +169,13 @@
        return ['v', head_pos, tail_pos]
    endfunction
 
-   function! Alpha()
-       let fpos  = search('\v\A|\n', 'b')
-      "bufName lineN colN  off 
-       let head_pos = getpos('.') 
-       let head_pos[2] +=   1
-       "echo head_pos
-       "向后搜索
-       let bpos  = search('\v\A|\n')
 
-       let tail_pos = getpos('.')
-       let tail_pos[2] -=   1
-       "echo tail_pos 
-       return ['v', head_pos, tail_pos]
-   endfunction
-
-   function! WithoutBracketWORD()
+   function! Funcparameter()
        "向前搜索空白或括号前部分 添加逗号
-       let fpos  = search('\v\s|[,;{})([]', 'b')
+       let curPos = getpos(".")
+       let curChar = s:get_char() 
+        
+       let fpos  = search('\v[,(]', 'b')
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        let head_pos[2] +=   1
@@ -192,16 +194,64 @@
        return ['v', head_pos, tail_pos]
    endfunction
 
-   function! ChunkBlock()
-       normal! $va{}}}
-       let tail_pos = getpos('.')
-       normal! F}%g0
-       let head_pos = getpos('.')
-       return ['v', head_pos, tail_pos]
-   endfunction
 
    let g:loaded_textobj_mine = 1
 
 function! s:cursor_char()
   return getline('.')[col('.') - 1]
+endfunction
+
+function! s:get_char(col)
+  return getline('.')[a:col]
+endfunction
+
+"it seem become not simple now
+"search the head target, not found, search [a-zA-Z0-9] 
+"search the tail target, not found, search [^a-zA-Z0-9] 
+"type: 0 A  1 I
+function! s:connectword(char, type)
+    "if current cursor char is the search char, no need to search backward
+    let curPos = getpos(".")
+    let curChar = s:cursor_char()
+    if curChar == a:char 
+        let head_pos = getpos('.')
+    else 
+        let searchHead = '\v[' . a:char .']'
+        let result = search(searchHead, 'b', line("."))
+        if result == 0 
+            "not found expect char
+            call setpos(".", curPos) 
+            let result = search('\v[0-9A-Za-z]', 'eb', line("."))
+            let head_pos = getpos('.')
+        else 
+            let head_pos = getpos('.')
+            if a:type == 1
+                let head_pos[2] +=   1
+            endif
+        endif
+    endif
+    
+    "bufName lineN colN  off 
+    call setpos(".", curPos) 
+
+    "向后搜索
+    let searchTail = '\v[' . a:char .']'
+    let result = search(searchTail, 'W', line("."))
+    if result == 0 
+        "not found expect char
+        call setpos(".", curPos) 
+        let searchTail = '\v\A'
+        let result = search('\v[^0-9A-Za-z]', 'W', line("."))
+        if result == 0 
+            let result = search('\v$', 'W', line("."))
+            let tail_pos = getpos('.')
+            return ['v', head_pos, tail_pos]
+        endif  
+        "如果行尾都没有发现
+        
+    endif
+    let tail_pos = getpos('.')
+    let tail_pos[2] -=   1
+    return ['v', head_pos, tail_pos]
+
 endfunction
