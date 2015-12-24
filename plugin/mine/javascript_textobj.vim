@@ -173,7 +173,7 @@
    function! Funcparameter()
        "向前搜索空白或括号前部分 添加逗号
        let curPos = getpos(".")
-       let curChar = s:get_char() 
+       let curChar = s:get_char(curPos[2]) 
         
        let fpos  = search('\v[,(]', 'b')
       "bufName lineN colN  off 
