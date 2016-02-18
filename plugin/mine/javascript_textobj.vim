@@ -27,7 +27,7 @@
    call textobj#user#plugin('alpha', {
                \   '-': {
                \     'select-i-function': 'Alpha',
-               \     'select-i': 'iu',
+               \     'select-i': 'iwu',
                \   },
                \ })
 
@@ -37,7 +37,7 @@
                \     'select-a-function': 'ACamel',
                \     'select-a': 'ac',
                \     'select-i-function': 'ICamel',
-               \     'select-i': 'ic',
+               \     'select-i': 'iwc',
                \   },
                \ })
 
@@ -45,9 +45,9 @@
    call textobj#user#plugin('connectworddot', {
                \   '-': {
                \     'select-a-function': 'AconnectwordDot',
-               \     'select-a': 'a.',
+               \     'select-a': 'aw.',
                \     'select-i-function': 'IconnectwordDot',
-               \     'select-i': 'i.',
+               \     'select-i': 'iw.',
                \   },
                \ })
 
@@ -55,9 +55,9 @@
    call textobj#user#plugin('connectwordunderline', {
                \   '-': {
                \     'select-a-function': 'AconnectwordUnderline',
-               \     'select-a': 'a-',
+               \     'select-a': 'aw-',
                \     'select-i-function': 'IconnectwordUnderline',
-               \     'select-i': 'i-',
+               \     'select-i': 'iw-',
                \   },
                \ })
 
