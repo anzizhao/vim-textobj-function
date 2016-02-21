@@ -27,7 +27,7 @@
    call textobj#user#plugin('alpha', {
                \   '-': {
                \     'select-i-function': 'Alpha',
-               \     'select-i': 'iwu',
+               \     'select-i': 'iu',
                \   },
                \ })
 
@@ -37,7 +37,7 @@
                \     'select-a-function': 'ACamel',
                \     'select-a': 'ac',
                \     'select-i-function': 'ICamel',
-               \     'select-i': 'iwc',
+               \     'select-i': 'ic',
                \   },
                \ })
 
@@ -45,9 +45,9 @@
    call textobj#user#plugin('connectworddot', {
                \   '-': {
                \     'select-a-function': 'AconnectwordDot',
-               \     'select-a': 'aw.',
+               \     'select-a': 'a.',
                \     'select-i-function': 'IconnectwordDot',
-               \     'select-i': 'iw.',
+               \     'select-i': 'i.',
                \   },
                \ })
 
@@ -55,9 +55,9 @@
    call textobj#user#plugin('connectwordunderline', {
                \   '-': {
                \     'select-a-function': 'AconnectwordUnderline',
-               \     'select-a': 'aw-',
+               \     'select-a': 'a-',
                \     'select-i-function': 'IconnectwordUnderline',
-               \     'select-i': 'iw-',
+               \     'select-i': 'i-',
                \   },
                \ })
 
@@ -173,7 +173,7 @@
    function! Funcparameter()
        "向前搜索空白或括号前部分 添加逗号
        let curPos = getpos(".")
-       "let curChar = s:get_char(curPos) 
+       let curChar = s:get_char_an() 
         
        let fpos  = search('\v[,(]', 'b')
       "bufName lineN colN  off 
@@ -201,7 +201,7 @@ function! s:cursor_char()
   return getline('.')[col('.') - 1]
 endfunction
 
-function! s:get_char(col)
+function! s:get_char_an(col)
   return getline('.')[a:col]
 endfunction
 
