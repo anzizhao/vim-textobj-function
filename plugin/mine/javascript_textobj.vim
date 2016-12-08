@@ -16,12 +16,12 @@
  endif
 
    "选中不带括号的WORD 
-   call textobj#user#plugin('funcparameter', {
-   \   '-': {
-   \     'select-i-function': 'Funcparameter',
-   \     'select-i': 'iw ',
-   \   },
-   \ })
+   "call textobj#user#plugin('funcparameter', {
+   "\   '-': {
+   "\     'select-i-function': 'Funcparameter',
+   "\     'select-i': 'iw ',
+   "\   },
+   "\ })
 
    "选中字母数字部分 
    call textobj#user#plugin('alpha', {
@@ -42,40 +42,40 @@
                \ })
 
    "选中链接单词的  .
-   call textobj#user#plugin('connectworddot', {
-               \   '-': {
-               \     'select-a-function': 'AconnectwordDot',
-               \     'select-a': 'aw.',
-               \     'select-i-function': 'IconnectwordDot',
-               \     'select-i': 'iw.',
-               \   },
-               \ })
+   "call textobj#user#plugin('connectworddot', {
+               "\   '-': {
+               "\     'select-a-function': 'AconnectwordDot',
+               "\     'select-a': 'aw.',
+               "\     'select-i-function': 'IconnectwordDot',
+               "\     'select-i': 'iw.',
+               "\   },
+               "\ })
 
    "选中链接单词的  .
-   call textobj#user#plugin('connectwordunderline', {
-               \   '-': {
-               \     'select-a-function': 'AconnectwordUnderline',
-               \     'select-a': 'aw-',
-               \     'select-i-function': 'IconnectwordUnderline',
-               \     'select-i': 'iw-',
-               \   },
-               \ })
+   "call textobj#user#plugin('connectwordunderline', {
+               "\   '-': {
+               "\     'select-a-function': 'AconnectwordUnderline',
+               "\     'select-a': 'aw-',
+               "\     'select-i-function': 'IconnectwordUnderline',
+               "\     'select-i': 'iw-',
+               "\   },
+               "\ })
 
    "选中当前光标到分号的
-   call textobj#user#plugin('smeicolon', {
-               \   '-': {
-               \     'select-a-function': 'Smeicolon',
-               \     'select-a': 'a;',
-               \   },
-               \ })
+   "call textobj#user#plugin('smeicolon', {
+               "\   '-': {
+               "\     'select-a-function': 'Smeicolon',
+               "\     'select-a': 'a;',
+               "\   },
+               "\ })
 
    "选中等于号的右手边
-   call textobj#user#plugin('equalrightside', {
-               \   '-': {
-               \     'select-a-function': 'Equalrightside',
-               \     'select-a': 'a=',
-               \   },
-               \ })
+   "call textobj#user#plugin('equalrightside', {
+               "\   '-': {
+               "\     'select-a-function': 'Equalrightside',
+               "\     'select-a': 'a=',
+               "\   },
+               "\ })
 
    function! AconnectwordDot()
        return s:connectword('.', 0)
@@ -129,43 +129,79 @@
 
 
    function! Alpha()
-       let fpos  = search('\v\A', 'b')
-      "bufName lineN colN  off 
-       let head_pos = getpos('.') 
-       let head_pos[2] +=   1
-       "echo head_pos
-       "向后搜索
-       let bpos  = search('\v\A')
-
-       let tail_pos = getpos('.')
-       let tail_pos[2] -=   1
-       "echo tail_pos 
-       return ['v', head_pos, tail_pos]
-   endfunction
-
-   function! ICamel()
        "先判断当前是否大写
        let char = s:cursor_char()
-
        if char !~ '\u'
-           let fpos  = search('\v\u|\A', 'b')
+           let fpos  = search('\v\A', 'b', line('.'))
        endif
+
+      if fpos == 0
+          let lineHead = search('\v^', 'b', line("."))
+      endif 
 
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
 
        "判断开始地方是否大写字母
        let char = s:cursor_char()
-       if char !~ '\u'
+       if char !~ '\u' && fpos != 0
            let head_pos[2] +=   1
        endif
 
        "向后搜索
-       let bpos  = search('\v\u|\A')
+       let bpos  = search('\v\A', '', line("."))
+
+       let lineEndPos = 0
+       if bpos == 0
+           let lineEndPos = search('\v$', '', line("."))
+       endif 
 
        let tail_pos = getpos('.')
-       let tail_pos[2] -=   1
-       "echo tail_pos 
+       if bpos != 0 && lineEndPos == 0 
+           let tail_pos[2] -=   1
+       endif
+       return ['v', head_pos, tail_pos]
+   endfunction
+
+   function! ICamel()
+       "先判断当前是否大写
+       let char = s:cursor_char()
+       if char !~ '\u'
+           let fpos  = search('\v\u|\A', 'b', line("."))
+       endif
+
+      if fpos == 0
+          "在这一行没有发现 移动光标到行首, line col 为0 不移动
+          "echo 'fpos == 0'
+          let lineHead = search('\v^', 'b', line("."))
+          "echo 'lineHead' lineHead
+          "cursor(0, 1)
+      endif 
+
+      let head_pos = getpos('.') 
+      "可以使用echo进行调试
+      "echo "head_pos" head_pos
+
+       "判断开始地方是否大写字母
+       let char = s:cursor_char()
+       if char !~ '\u' && fpos != 0
+           let head_pos[2] +=   1
+       endif
+
+       "向后搜索
+       let bpos  = search('\v\u|\A', '', line("."))
+       let lineEndPos = 0
+       if bpos == 0
+           "在这一行没有发现 移动光标到行首, line col 为0 不移动
+           let lineEndPos = search('\v$', '', line("."))
+           "echo 'bpos == 0'
+       endif 
+
+       let tail_pos = getpos('.')
+       if bpos != 0 && lineEndPos == 0 
+           let tail_pos[2] -=   1
+       endif
+       "echo  "tail_pos"  tail_pos 
        return ['v', head_pos, tail_pos]
    endfunction
 
@@ -179,7 +215,8 @@
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
        let head_pos[2] +=   1
-       "echo head_pos
+
+       echo "head_pos" head_pos
        "向后搜索
        "let bpos  = search('\v\s|[],;})]')
        let fpos  = search('\v\s|[],;{}()]' )
@@ -191,6 +228,7 @@
            let tail_pos[2] -=   1
        endif
 
+       echo  "tail_pos"  tail_pos 
        return ['v', head_pos, tail_pos]
    endfunction
 
