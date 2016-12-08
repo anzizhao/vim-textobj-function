@@ -19,7 +19,11 @@
    "call textobj#user#plugin('funcparameter', {
    "\   '-': {
    "\     'select-i-function': 'Funcparameter',
+<<<<<<< HEAD
    "\     'select-i': 'iw ',
+=======
+   "\     'select-i': 'i ',
+>>>>>>> origin/master
    "\   },
    "\ })
 
@@ -34,6 +38,11 @@
    "选中驼峰 
    call textobj#user#plugin('camel', {
                \   '-': {
+<<<<<<< HEAD
+               \     'select-a-function': 'ACamel',
+               \     'select-a': 'awc',
+=======
+>>>>>>> origin/master
                \     'select-i-function': 'ICamel',
                \     'select-i': 'iwc',
                \   },
@@ -165,7 +174,11 @@
        "先判断当前是否大写
        let char = s:cursor_char()
        if char !~ '\u'
+<<<<<<< HEAD
            let fpos  = search('\v\u|\A', 'b', line("."))
+=======
+           let fpos  = search('\v\A|\u', 'b', line("w0") )
+>>>>>>> origin/master
        endif
 
       if fpos == 0
@@ -197,10 +210,16 @@
        endif 
 
        let tail_pos = getpos('.')
+<<<<<<< HEAD
        if bpos != 0 && lineEndPos == 0 
            let tail_pos[2] -=   1
        endif
        "echo  "tail_pos"  tail_pos 
+=======
+       let tail_pos[2] -=   1
+       echo tail_pos
+       "echo tail_pos 
+>>>>>>> origin/master
        return ['v', head_pos, tail_pos]
    endfunction
 
@@ -208,7 +227,11 @@
    function! Funcparameter()
        "向前搜索空白或括号前部分 添加逗号
        let curPos = getpos(".")
+<<<<<<< HEAD
        let curChar = s:get_char(curPos[2]) 
+=======
+       "let curChar = s:get_char(curPos) 
+>>>>>>> origin/master
         
        let fpos  = search('\v[,(]', 'b')
       "bufName lineN colN  off 
