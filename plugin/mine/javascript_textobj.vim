@@ -16,12 +16,12 @@
  endif
 
    "选中不带括号的WORD 
-   call textobj#user#plugin('funcparameter', {
-   \   '-': {
-   \     'select-i-function': 'Funcparameter',
-   \     'select-i': 'i ',
-   \   },
-   \ })
+   "call textobj#user#plugin('funcparameter', {
+   "\   '-': {
+   "\     'select-i-function': 'Funcparameter',
+   "\     'select-i': 'i ',
+   "\   },
+   "\ })
 
    "选中字母数字部分 
    call textobj#user#plugin('alpha', {
@@ -34,48 +34,46 @@
    "选中驼峰 
    call textobj#user#plugin('camel', {
                \   '-': {
-               \     'select-a-function': 'ACamel',
-               \     'select-a': 'ac',
                \     'select-i-function': 'ICamel',
                \     'select-i': 'iwc',
                \   },
                \ })
 
    "选中链接单词的  .
-   call textobj#user#plugin('connectworddot', {
-               \   '-': {
-               \     'select-a-function': 'AconnectwordDot',
-               \     'select-a': 'aw.',
-               \     'select-i-function': 'IconnectwordDot',
-               \     'select-i': 'iw.',
-               \   },
-               \ })
+   "call textobj#user#plugin('connectworddot', {
+               "\   '-': {
+               "\     'select-a-function': 'AconnectwordDot',
+               "\     'select-a': 'aw.',
+               "\     'select-i-function': 'IconnectwordDot',
+               "\     'select-i': 'iw.',
+               "\   },
+               "\ })
 
    "选中链接单词的  .
-   call textobj#user#plugin('connectwordunderline', {
-               \   '-': {
-               \     'select-a-function': 'AconnectwordUnderline',
-               \     'select-a': 'aw-',
-               \     'select-i-function': 'IconnectwordUnderline',
-               \     'select-i': 'iw-',
-               \   },
-               \ })
+   "call textobj#user#plugin('connectwordunderline', {
+               "\   '-': {
+               "\     'select-a-function': 'AconnectwordUnderline',
+               "\     'select-a': 'aw-',
+               "\     'select-i-function': 'IconnectwordUnderline',
+               "\     'select-i': 'iw-',
+               "\   },
+               "\ })
 
    "选中当前光标到分号的
-   call textobj#user#plugin('smeicolon', {
-               \   '-': {
-               \     'select-a-function': 'Smeicolon',
-               \     'select-a': 'a;',
-               \   },
-               \ })
+   "call textobj#user#plugin('smeicolon', {
+               "\   '-': {
+               "\     'select-a-function': 'Smeicolon',
+               "\     'select-a': 'a;',
+               "\   },
+               "\ })
 
    "选中等于号的右手边
-   call textobj#user#plugin('equalrightside', {
-               \   '-': {
-               \     'select-a-function': 'Equalrightside',
-               \     'select-a': 'a=',
-               \   },
-               \ })
+   "call textobj#user#plugin('equalrightside', {
+               "\   '-': {
+               "\     'select-a-function': 'Equalrightside',
+               "\     'select-a': 'a=',
+               "\   },
+               "\ })
 
    function! AconnectwordDot()
        return s:connectword('.', 0)
@@ -148,12 +146,13 @@
        let char = s:cursor_char()
 
        if char !~ '\u'
-           let fpos  = search('\v\u|\A', 'b')
+           let fpos  = search('\v\A|\u', 'b', line("w0") )
        endif
 
       "bufName lineN colN  off 
        let head_pos = getpos('.') 
 
+       echo head_pos 
        "判断开始地方是否大写字母
        let char = s:cursor_char()
        if char !~ '\u'
@@ -165,6 +164,7 @@
 
        let tail_pos = getpos('.')
        let tail_pos[2] -=   1
+       echo tail_pos
        "echo tail_pos 
        return ['v', head_pos, tail_pos]
    endfunction
